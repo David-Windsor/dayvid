@@ -1,2 +1,4 @@
 # Ignore editor folders
-./.vscode
+.vscode/
+
+node_modules/
