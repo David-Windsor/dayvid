@@ -72,4 +72,73 @@ router.post('/test-post', (req, res, next) => {
     })
 })
 
+router.post('/test-pog', (req, res, next) => {
+    let body = req.body
+    
+    let emoteFromRequest = body.emote
+    let numberFromRequest = body.number
+
+    if (numberFromRequest === undefined || typeof numberFromRequest !== 'number') {
+        // There are multiple ways to format and send a response, this is just from a quick look at their documentation: http://expressjs.com/en/api.html#res
+        // Set the status code to 400, and send a response, the 'reason' field doesn't always need to be so detailed but it helps here. Sometimes you don't actually want to be detailed in responses
+        res.status(400)
+        res.json({
+            status: 400, // Also don't always need to put the status in the response body, it tends to vry from place to place
+            reason: `Invalid message sent. Was expecing field 'number' with type number, but got type: ${typeof numberFromRequest}, value: ${numberFromRequest}`
+        })
+
+        return;
+    }
+    if (!isFieldValid(emoteFromRequest, 'string')) {
+        // There are multiple ways to format and send a response, this is just from a quick look at their documentation: http://expressjs.com/en/api.html#res
+        // Set the status code to 400, and send a response, the 'reason' field doesn't always need to be so detailed but it helps here. Sometimes you don't actually want to be detailed in responses
+        res.status(400)
+        res.json({
+            status: 400, // Also don't always need to put the status in the response body, it tends to vry from place to place
+            reason: `Invalid message sent. Was expecing field 'emote' with type string, but got type: ${typeof emoteFromRequest}, value: ${emoteFromRequest}`
+        })
+
+        return;
+    }
+    let emoteToSend;
+
+    if (emoteFromRequest === 'pogchamp') {
+        emoteToSend = 'Pog'
+    }
+    else if (emoteFromRequest === 'weirdchamp') {
+        emoteToSend = '4Weird'
+    }
+    else if (emoteFromRequest === 'jakechamp') {
+        emoteToSend = 'Cringe'
+    }
+    else {
+        emoteToSend = `${emoteFromRequest} is not a valid emote`
+        res.status(400)
+        res.json({
+            status: 400, // Also don't always need to put the status in the response body, it tends to vry from place to place
+            reason: `Invalid message sent. Was expecting a good emote`
+        })
+    }
+
+    res.json(
+        {
+        new_emote: emoteToSend,
+        new_number: numberFromRequest + 1
+        }
+    )
+
+
+    /*
+    Helper functions
+    */
+
+    function isFieldValid(fieldToValidate, expectedType) {
+        return fieldToValidate !== undefined && typeof fieldToValidate === expectedType
+    }
+
+
+
+})
+
+
 module.exports = router;
